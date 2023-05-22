@@ -32,7 +32,19 @@ public class AddUserRequestDTO {
         return new UserEntity(UUID.randomUUID().toString(), firstName, lastName, email, phone);
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }
