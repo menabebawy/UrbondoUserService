@@ -6,12 +6,14 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static com.amazonaws.regions.Regions.US_EAST_1;
 
 @Configuration
+@EnableDynamoDBRepositories(basePackages = "com.urbondo.user.service.service")
 public class DynamoDBConfig {
 
     @Bean

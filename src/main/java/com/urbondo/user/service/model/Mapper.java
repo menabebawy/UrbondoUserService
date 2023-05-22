@@ -1,14 +1,14 @@
 package com.urbondo.user.service.model;
 
-public class Mapper {
+public final class Mapper {
     private Mapper() {}
 
     public static UserDTO transferToUserDTO(final UserEntity userEntity) {
-        return new UserDTO(userEntity.id(),
-                           userEntity.firstName(),
-                           userEntity.lastName(),
-                           userEntity.email(),
-                           userEntity.phone());
+        return new UserDTO(userEntity.getId(),
+                           userEntity.getFirstName(),
+                           userEntity.getLastName(),
+                           userEntity.getEmail(),
+                           userEntity.getPhone());
     }
 
     public static UserEntity transferToUserEntity(final UserDTO userDTO) {

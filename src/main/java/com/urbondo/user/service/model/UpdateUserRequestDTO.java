@@ -2,7 +2,7 @@ package com.urbondo.user.service.model;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class UpdateUserRequestDTO extends AddUserRequestDTO {
+public final class UpdateUserRequestDTO extends AddUserRequestDTO {
     @NotBlank
     private final String id;
 

@@ -1,6 +1,7 @@
 package com.urbondo.user.service.controller;
 
 import com.urbondo.user.service.model.AddUserRequestDTO;
+import com.urbondo.user.service.model.AddUserResponseDTO;
 import com.urbondo.user.service.model.UpdateUserRequestDTO;
 import com.urbondo.user.service.model.UserDTO;
 import com.urbondo.user.service.service.UserService;
@@ -26,8 +27,8 @@ public class UserController {
 
     @PostMapping()
     @ResponseStatus(CREATED)
-    void addNewUser(@RequestBody @Valid final AddUserRequestDTO requestDTO) {
-        userService.add(requestDTO);
+    AddUserResponseDTO addNewUser(@RequestBody @Valid final AddUserRequestDTO requestDTO) {
+        return userService.add(requestDTO);
     }
 
     @PutMapping()

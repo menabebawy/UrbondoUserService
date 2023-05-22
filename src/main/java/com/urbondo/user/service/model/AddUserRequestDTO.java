@@ -4,18 +4,21 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import java.util.UUID;
+
 public class AddUserRequestDTO {
-    @NotBlank
+    @NotBlank(message = "firstName must not be blank.")
     protected final String firstName;
 
-    @NotBlank
+    @NotBlank(message = "lastName must not be blank.")
     protected final String lastName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "email must not be blank.")
+    @Email(message = "email is invalid.")
     protected final String email;
 
-    @Pattern(regexp = "(^$|[0-9]{10})")
+    @NotBlank(message = "phone must not be blank.")
+    @Pattern(regexp = "^\\d{10}$", message = "phone is invalid.")
     protected final String phone;
 
     public AddUserRequestDTO(String firstName, String lastName, String email, String phone) {
@@ -26,7 +29,7 @@ public class AddUserRequestDTO {
     }
 
     public UserEntity transferToUserEntity() {
-        return new UserEntity(null, firstName, lastName, email, phone);
+        return new UserEntity(UUID.randomUUID().toString(), firstName, lastName, email, phone);
     }
 
     public String getEmail() {

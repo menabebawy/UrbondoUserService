@@ -2,14 +2,10 @@ package com.urbondo.user.service.service;
 
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.Mapper;
-import com.urbondo.user.service.model.UpdateUserRequestDTO;
-import com.urbondo.user.service.model.UserDTO;
+import com.urbondo.user.service.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,17 +25,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(final AddUserRequestDTO requestDTO) {
+    public AddUserResponseDTO add(final AddUserRequestDTO requestDTO) {
         if (isAlreadyExist(requestDTO.getEmail())) {
             throw new UserAlreadyFoundException(requestDTO.getEmail());
         }
 
-        userRepository.save(requestDTO.transferToUserEntity());
+        UserEntity userEntity = userRepository.save(requestDTO.transferToUserEntity());
+
+        return new AddUserResponseDTO(userEntity.getId());
     }
 
     private boolean isAlreadyExist(String email) {
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .anyMatch(userEntity -> userEntity.email().equals(email));
+        for (UserEntity userEntity : userRepository.findAll()) {
+            if (userEntity.getEmail().equals(email)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -50,7 +53,7 @@ public class UserServiceImpl implements UserService {
                 .map(userRepository::save)
                 .map(Mapper::transferToUserDTO)
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     @Override
