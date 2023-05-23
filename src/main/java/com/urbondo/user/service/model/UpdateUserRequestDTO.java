@@ -3,7 +3,7 @@ package com.urbondo.user.service.model;
 import jakarta.validation.constraints.NotBlank;
 
 public final class UpdateUserRequestDTO extends AddUserRequestDTO {
-    @NotBlank
+    @NotBlank(message = "id must not be blank.")
     private final String id;
 
     public UpdateUserRequestDTO(String id, String firstName, String lastName, String email, String phone) {
