@@ -1,6 +1,7 @@
 package com.urbondo.user.service;
 
 import com.urbondo.user.service.model.AddUserRequestDTO;
+import com.urbondo.user.service.model.UpdateUserRequestDTO;
 import com.urbondo.user.service.model.UserDTO;
 
 class MockData {
@@ -18,5 +19,9 @@ class MockData {
 
     static AddUserRequestDTO getAddUserRequestDTO() {
         return new AddUserRequestDTO(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
+    }
+
+    static UpdateUserRequestDTO getNotExistUpdateUserRequestDTO() {
+        return new UpdateUserRequestDTO(NOT_FOUND_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
     }
 }

@@ -109,11 +109,7 @@ class UserControllerTests {
 
     @Test
     void whenPutUser_givenNotExistUserId_thenUserNotFoundErrorMessage() throws Exception {
-        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(MockData.NOT_FOUND_USER_ID,
-                                                                   MockData.VALID_FIRST_NAME,
-                                                                   MockData.VALID_LAST_NAME,
-                                                                   MockData.VALID_EMAIL,
-                                                                   MockData.VALID_PHONE);
+        UpdateUserRequestDTO requestDTO = MockData.getNotExistUpdateUserRequestDTO();
 
         doThrow(new UserNotFoundException(MockData.NOT_FOUND_USER_ID)).when(userService).updateBy(any());
 

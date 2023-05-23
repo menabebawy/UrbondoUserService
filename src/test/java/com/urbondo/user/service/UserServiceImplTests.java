@@ -2,10 +2,7 @@ package com.urbondo.user.service;
 
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.AddUserResponseDTO;
-import com.urbondo.user.service.model.UserDTO;
-import com.urbondo.user.service.model.UserEntity;
+import com.urbondo.user.service.model.*;
 import com.urbondo.user.service.service.UserRepository;
 import com.urbondo.user.service.service.UserService;
 import com.urbondo.user.service.service.UserServiceImpl;
@@ -85,5 +82,16 @@ class UserServiceImplTests {
         AddUserResponseDTO responseDTO = userService.add(requestDTO);
 
         assertNotNull(responseDTO.id());
+    }
+
+    @Test
+    void whenUpdateUserById_givenNotExistUserId_thenUserNotFoundException() {
+        UpdateUserRequestDTO requestDTO = getNotExistUpdateUserRequestDTO();
+        assertThrows(UserNotFoundException.class, () -> userService.updateBy(requestDTO));
+    }
+
+    @Test
+    void whenDeleteUserById_givenNotExistUserId_thenUserNotFoundException() {
+        assertThrows(UserNotFoundException.class, () -> userService.deleteBy(NOT_FOUND_USER_ID));
     }
 }
