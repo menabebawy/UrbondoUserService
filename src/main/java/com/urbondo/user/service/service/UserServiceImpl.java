@@ -26,23 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AddUserResponseDTO add(final AddUserRequestDTO requestDTO) {
-        if (isAlreadyExist(requestDTO.getEmail())) {
+        if (userRepository.findByEmail(requestDTO.getEmail()) != null) {
             throw new UserAlreadyFoundException(requestDTO.getEmail());
         }
 
         UserEntity userEntity = userRepository.save(requestDTO.transferToUserEntity());
-
         return new AddUserResponseDTO(userEntity.getId());
-    }
-
-    private boolean isAlreadyExist(String email) {
-        for (UserEntity userEntity : userRepository.findAll()) {
-            if (userEntity.getEmail().equals(email)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 

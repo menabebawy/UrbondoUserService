@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @EnableScan
-public interface UserRepository extends CrudRepository<UserEntity, String> {}
+public interface UserRepository extends CrudRepository<UserEntity, String> {
+    UserEntity findByEmail(String email);
+}

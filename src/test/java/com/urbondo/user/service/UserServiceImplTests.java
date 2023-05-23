@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.urbondo.user.service.MockData.*;
@@ -66,7 +65,7 @@ class UserServiceImplTests {
 
     @Test
     void whenAddNewUser_givenExistEmail_thenUserAlreadyFoundException() {
-        when(userRepository.findAll()).thenReturn(List.of(getUserEntity()));
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(getUserEntity());
 
         AddUserRequestDTO requestDTO = getAddUserRequestDTO();
 
