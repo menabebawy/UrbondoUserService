@@ -30,13 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {UserController.class})
 class UserControllerTests {
-    private static final String VALID_EMAIL = "valid@test.com";
-    private static final String VALID_PHONE = "1234567890";
-    private static final String VALID_FIRST_NAME = "Json";
-    private static final String VALID_LAST_NAME = "Tom";
-    private final String BASE_URL = "/user";
-    private final String USER_ID = "1";
-    private final String NOT_FOUND_USER_ID = "123";
+    private final static String BASE_URL = "/user";
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     MockMvc mockMvc;
@@ -45,16 +39,16 @@ class UserControllerTests {
 
     private static Stream<Arguments> addUserRequestAndErrorMessage() {
         return Stream.of(Arguments.of("email is invalid.",
-                                      new AddUserRequestDTO(VALID_FIRST_NAME, VALID_LAST_NAME, ".com", VALID_PHONE)),
+                                      new AddUserRequestDTO(MockData.VALID_FIRST_NAME, MockData.VALID_LAST_NAME, ".com", MockData.VALID_PHONE)),
                          Arguments.of("lastName must not be blank.",
-                                      new AddUserRequestDTO(VALID_FIRST_NAME, "", VALID_EMAIL, VALID_PHONE)),
+                                      new AddUserRequestDTO(MockData.VALID_FIRST_NAME, "", MockData.VALID_EMAIL, MockData.VALID_PHONE)),
                          Arguments.of("firstName must not be blank.",
-                                      new AddUserRequestDTO("", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE)));
+                                      new AddUserRequestDTO("", MockData.VALID_LAST_NAME, MockData.VALID_EMAIL, MockData.VALID_PHONE)));
     }
 
     @Test
     void whenGetUserById_givenNotExistUserId_thenUserNotFoundException() throws Exception {
-        when(userService.findById(NOT_FOUND_USER_ID)).thenThrow(new UserNotFoundException(NOT_FOUND_USER_ID));
+        when(userService.findById(MockData.NOT_FOUND_USER_ID)).thenThrow(new UserNotFoundException(MockData.NOT_FOUND_USER_ID));
 
         mockMvc.perform(get(getNotFoundUserURL()))
                 .andExpect(status().isNotFound())
@@ -63,15 +57,15 @@ class UserControllerTests {
 
     @Test
     void whenGetUserById_givenValidUserId_thenCorrect() throws Exception {
-        when(userService.findById(USER_ID)).thenReturn(userDTO());
+        when(userService.findById(MockData.USER_ID)).thenReturn(MockData.userDTO());
 
-        mockMvc.perform(get(BASE_URL + "/" + USER_ID).contentType(APPLICATION_JSON))
+        mockMvc.perform(get(BASE_URL + "/" + MockData.USER_ID).contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", Matchers.is(userDTO().id())))
-                .andExpect(jsonPath("$.firstName", Matchers.is(userDTO().firstName())))
-                .andExpect(jsonPath("$.lastName", Matchers.is(userDTO().lastName())))
-                .andExpect(jsonPath("$.email", Matchers.is(userDTO().email())))
-                .andExpect(jsonPath("$.phone", Matchers.is(userDTO().phone())));
+                .andExpect(jsonPath("$.id", Matchers.is(MockData.userDTO().id())))
+                .andExpect(jsonPath("$.firstName", Matchers.is(MockData.userDTO().firstName())))
+                .andExpect(jsonPath("$.lastName", Matchers.is(MockData.userDTO().lastName())))
+                .andExpect(jsonPath("$.email", Matchers.is(MockData.userDTO().email())))
+                .andExpect(jsonPath("$.phone", Matchers.is(MockData.userDTO().phone())));
     }
 
     @ParameterizedTest
@@ -86,28 +80,25 @@ class UserControllerTests {
 
     @Test
     void whenPostNewUser_givenValidRequestBody_thenGetUserId() throws Exception {
-        AddUserRequestDTO requestDTO = new AddUserRequestDTO(VALID_FIRST_NAME,
-                                                             VALID_LAST_NAME,
-                                                             VALID_EMAIL,
-                                                             VALID_PHONE);
+        AddUserRequestDTO requestDTO = MockData.getAddUserRequestDTO();
 
-        doReturn(new AddUserResponseDTO(USER_ID)).when(userService).add(any());
+        doReturn(new AddUserResponseDTO(MockData.USER_ID)).when(userService).add(any());
 
-        when(userService.add(requestDTO)).thenReturn(new AddUserResponseDTO(USER_ID));
+        when(userService.add(requestDTO)).thenReturn(new AddUserResponseDTO(MockData.USER_ID));
 
         mockMvc.perform(post(BASE_URL).contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", Matchers.is(USER_ID)));
+                .andExpect(jsonPath("$.id", Matchers.is(MockData.USER_ID)));
     }
 
     @Test
     void whenPutUser_givenBlankUserId_thenBadRequest() throws Exception {
         UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO("",
-                                                                   VALID_FIRST_NAME,
-                                                                   VALID_LAST_NAME,
-                                                                   VALID_EMAIL,
-                                                                   VALID_PHONE);
+                                                                   MockData.VALID_FIRST_NAME,
+                                                                   MockData.VALID_LAST_NAME,
+                                                                   MockData.VALID_EMAIL,
+                                                                   MockData.VALID_PHONE);
 
         mockMvc.perform(put(BASE_URL).contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDTO)))
@@ -118,13 +109,13 @@ class UserControllerTests {
 
     @Test
     void whenPutUser_givenNotExistUserId_thenUserNotFoundErrorMessage() throws Exception {
-        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(NOT_FOUND_USER_ID,
-                                                                   VALID_FIRST_NAME,
-                                                                   VALID_LAST_NAME,
-                                                                   VALID_EMAIL,
-                                                                   VALID_PHONE);
+        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(MockData.NOT_FOUND_USER_ID,
+                                                                   MockData.VALID_FIRST_NAME,
+                                                                   MockData.VALID_LAST_NAME,
+                                                                   MockData.VALID_EMAIL,
+                                                                   MockData.VALID_PHONE);
 
-        doThrow(new UserNotFoundException(NOT_FOUND_USER_ID)).when(userService).updateBy(any());
+        doThrow(new UserNotFoundException(MockData.NOT_FOUND_USER_ID)).when(userService).updateBy(any());
 
         mockMvc.perform(put(BASE_URL).contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDTO)))
@@ -134,13 +125,13 @@ class UserControllerTests {
 
     @Test
     void whenPutUser_givenValidRequest_thenCorrect() throws Exception {
-        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(USER_ID,
+        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(MockData.USER_ID,
                                                                    "New_FName",
-                                                                   VALID_LAST_NAME,
-                                                                   VALID_EMAIL,
-                                                                   VALID_PHONE);
+                                                                   MockData.VALID_LAST_NAME,
+                                                                   MockData.VALID_EMAIL,
+                                                                   MockData.VALID_PHONE);
 
-        UserDTO responseDTO = new UserDTO(USER_ID, "New_FName", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
+        UserDTO responseDTO = new UserDTO(MockData.USER_ID, "New_FName", MockData.VALID_LAST_NAME, MockData.VALID_EMAIL, MockData.VALID_PHONE);
 
         doReturn(responseDTO).when(userService).updateBy(any());
 
@@ -152,7 +143,7 @@ class UserControllerTests {
 
     @Test
     void whenDeleteUser_givenNotExistUserId_thenUserNotFoundException() throws Exception {
-        doThrow(new UserNotFoundException(NOT_FOUND_USER_ID)).when(userService).deleteBy(NOT_FOUND_USER_ID);
+        doThrow(new UserNotFoundException(MockData.NOT_FOUND_USER_ID)).when(userService).deleteBy(MockData.NOT_FOUND_USER_ID);
 
         mockMvc.perform(delete(getNotFoundUserURL()).contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -161,20 +152,17 @@ class UserControllerTests {
 
     @Test
     void whenDeleteUser_givenValidUserId_thenNoContent() throws Exception {
-        doNothing().when(userService).deleteBy(USER_ID);
+        doNothing().when(userService).deleteBy(MockData.USER_ID);
 
         mockMvc.perform(delete(getNotFoundUserURL()).contentType(APPLICATION_JSON)).andExpect(status().isNoContent());
     }
 
     private String getNotFoundUserURL() {
-        return BASE_URL + "/" + NOT_FOUND_USER_ID;
+        return BASE_URL + "/" + MockData.NOT_FOUND_USER_ID;
     }
 
     private String getNotFoundUserErrorValue() {
-        return "User id:" + NOT_FOUND_USER_ID + " is not found.";
+        return "User id:" + MockData.NOT_FOUND_USER_ID + " is not found.";
     }
 
-    private UserDTO userDTO() {
-        return new UserDTO(USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
-    }
 }
