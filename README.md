@@ -70,7 +70,7 @@ From the root folder, just execute the following command which will build/run un
       "phone": "1334545677"
     }
     ```
-   Response `404 NOT FOUND`
+   Response `201`
    ```json
    {
       "id": "e0716138-442d-43a8-a6e1-1e846c678d5a"
