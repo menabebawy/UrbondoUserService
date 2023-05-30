@@ -76,6 +76,14 @@ From the root folder, just execute the following command which will build/run un
       "id": "e0716138-442d-43a8-a6e1-1e846c678d5a"
    }
    ```
+   A bad request gets returned when either one of field gets blank or email/phone is not valid. Message's value
+   depends on the invalid field.
+   Response `400 BAD REQUEST`
+   ```json
+   {
+     "message": "{validation's message}"
+   }
+   ```
 
 3. Update an existing user `PUT /user/{id}`
 
@@ -104,6 +112,15 @@ From the root folder, just execute the following command which will build/run un
    ```json
    {
      "message": "user id:{id} is not found"
+   }
+   ```
+   
+   A bad request gets returned when either one of field gets blank or email/phone is not valid. Message's value 
+   depends on the invalid field.
+   Response `400 BAD REQUEST`
+   ```json
+   {
+     "message": "{validation's message}"
    }
    ```
 
