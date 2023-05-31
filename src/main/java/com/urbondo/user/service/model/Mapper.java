@@ -10,12 +10,4 @@ public final class Mapper {
                            userEntity.getEmail(),
                            userEntity.getPhone());
     }
-
-    public static UserEntity transferToUserEntity(final UserDTO userDTO) {
-        return new UserEntity(userDTO.id(),
-                              userDTO.firstName(),
-                              userDTO.lastName(),
-                              userDTO.email(),
-                              userDTO.phone());
-    }
 }

@@ -3,9 +3,7 @@ package com.urbondo.user.service;
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
 import com.urbondo.user.service.model.*;
-import com.urbondo.user.service.service.UserRepository;
 import com.urbondo.user.service.service.UserService;
-import com.urbondo.user.service.service.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +33,7 @@ class UserServiceImplTests {
 
     @BeforeEach
     void setup() {
-        userService = new UserServiceImpl(userRepository);
+//        userService = new UserServiceImpl(n);
     }
 
     @AfterEach
