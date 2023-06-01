@@ -1,4 +1,4 @@
-package com.urbondo.user.service.model;
+package com.urbondo.user.service.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "urbondo-user")
-public final class UserEntity {
+public final class UserDAO {
     @DynamoDBHashKey
     private String id;
     @DynamoDBAttribute
@@ -19,10 +19,10 @@ public final class UserEntity {
     @DynamoDBAttribute
     private String phone;
 
-    public UserEntity() {
+    public UserDAO() {
     }
 
-    public UserEntity(String id, String firstName, String lastName, String email, String phone) {
+    public UserDAO(String id, String firstName, String lastName, String email, String phone) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

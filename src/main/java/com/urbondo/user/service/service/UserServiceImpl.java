@@ -1,87 +1,77 @@
 package com.urbondo.user.service.service;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import com.urbondo.user.service.model.*;
+import com.urbondo.user.service.repository.UserDAO;
+import com.urbondo.user.service.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService {
-    private final DynamoDBMapper dynamoDBMapper;
+class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
-    public UserServiceImpl(DynamoDBMapper dynamoDBMapper) {
-        this.dynamoDBMapper = dynamoDBMapper;
+    UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UserDTO findById(String id) {
-        return Mapper.transferToUserDTO(findUserEntityById(id));
+    public User findById(final String id) {
+        UserDAO userDAO = findByIdOrThrowException(id);
+        return transferToUser(userDAO);
     }
 
     @Override
-    public AddUserResponseDTO add(final AddUserRequestDTO requestDTO) {
-        Map<String, AttributeValue> attributesValues = new HashMap<>();
-        attributesValues.put(":email", new AttributeValue().withS(requestDTO.getEmail()));
-
-        Map<String, String> attributesNames = new HashMap<>();
-        attributesNames.put("#email", "email");
-
-        DynamoDBQueryExpression<UserEntity> queryExpression = new DynamoDBQueryExpression<UserEntity>().withIndexName(
-                        "email")
-                .withKeyConditionExpression("#email = :email")
-                .withExpressionAttributeNames(attributesNames)
-                .withExpressionAttributeValues(attributesValues)
-                .withConsistentRead(false);
-
-
-        if (!dynamoDBMapper.query(UserEntity.class, queryExpression).isEmpty()) {
-            throw new UserAlreadyFoundException(requestDTO.getEmail());
+    public String add(final AddUser addUser) {
+        if (userRepository.isEmailExist(addUser.email())) {
+            throw new UserAlreadyFoundException(addUser.email());
         }
 
-        UserEntity userEntity = new UserEntity(UUID.randomUUID().toString(),
-                                               requestDTO.getFirstName(),
-                                               requestDTO.getLastName(),
-                                               requestDTO.getEmail(),
-                                               requestDTO.getPhone());
+        UserDAO userDAO = new UserDAO(UUID.randomUUID().toString(),
+                                      addUser.firstName(),
+                                      addUser.lastName(),
+                                      addUser.email(),
+                                      addUser.phone());
 
-        dynamoDBMapper.save(userEntity);
+        userRepository.save(userDAO);
 
-        return new AddUserResponseDTO(userEntity.getId());
+        return userDAO.getId();
     }
 
 
     @Override
-    public UserDTO updateBy(final UpdateUserRequestDTO requestDTO) {
-        UserEntity userEntity = findUserEntityById(requestDTO.getId());
+    public User updateById(final String id, final UpdateUser updateUser) {
+        UserDAO userDAO = findByIdOrThrowException(id);
 
-        userEntity.setFirstName(requestDTO.getFirstName());
-        userEntity.setLastName(requestDTO.getLastName());
-        userEntity.setEmail(requestDTO.getEmail());
-        userEntity.setPhone(requestDTO.getPhone());
+        userDAO.setFirstName(updateUser.firstName());
+        userDAO.setLastName(updateUser.lastName());
+        userDAO.setPhone(updateUser.phone());
 
-        dynamoDBMapper.save(userEntity);
+        userRepository.save(userDAO);
 
-        return Mapper.transferToUserDTO(userEntity);
+        return transferToUser(userDAO);
     }
 
     @Override
-    public void deleteBy(String id) {
-        dynamoDBMapper.delete(findUserEntityById(id));
+    public void deleteBy(final String id) {
+        UserDAO userDAO = findByIdOrThrowException(id);
+        userRepository.delete(userDAO);
     }
 
-    private UserEntity findUserEntityById(String id) {
-        UserEntity userEntity = dynamoDBMapper.load(UserEntity.class, id);
-        if (userEntity == null) {
+    private UserDAO findByIdOrThrowException(String id) {
+        UserDAO userDAO = userRepository.findById(id);
+        if (userDAO == null) {
             throw new UserNotFoundException(id);
         }
+        return userDAO;
+    }
 
-        return userEntity;
+    private User transferToUser(final UserDAO userDAO) {
+        return new User(userDAO.getId(),
+                        userDAO.getFirstName(),
+                        userDAO.getLastName(),
+                        userDAO.getEmail(),
+                        userDAO.getPhone());
     }
 }

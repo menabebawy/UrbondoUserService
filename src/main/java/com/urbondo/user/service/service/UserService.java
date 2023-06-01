@@ -1,16 +1,11 @@
 package com.urbondo.user.service.service;
 
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.AddUserResponseDTO;
-import com.urbondo.user.service.model.UpdateUserRequestDTO;
-import com.urbondo.user.service.model.UserDTO;
-
 public interface UserService {
-    UserDTO findById(String id);
+    User findById(final String id);
 
-    AddUserResponseDTO add(final AddUserRequestDTO requestDTO);
+    String add(final AddUser user);
 
-    UserDTO updateBy(final UpdateUserRequestDTO requestDTO);
+    User updateById(final String id, final UpdateUser updateUser);
 
-    void deleteBy(String id);
+    void deleteBy(final String id);
 }

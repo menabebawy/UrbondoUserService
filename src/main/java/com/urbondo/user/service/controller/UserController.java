@@ -1,9 +1,6 @@
 package com.urbondo.user.service.controller;
 
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.AddUserResponseDTO;
-import com.urbondo.user.service.model.UpdateUserRequestDTO;
-import com.urbondo.user.service.model.UserDTO;
+import com.urbondo.user.service.service.User;
 import com.urbondo.user.service.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -21,20 +18,20 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    UserDTO fetchUserById(@PathVariable @Valid final String id) {
+    User fetchUserById(@PathVariable @Valid final String id) {
         return userService.findById(id);
     }
 
     @PostMapping()
     @ResponseStatus(CREATED)
     AddUserResponseDTO addNewUser(@RequestBody @Valid final AddUserRequestDTO requestDTO) {
-        return userService.add(requestDTO);
+        return new AddUserResponseDTO(userService.add(requestDTO.transferToAddUserDTO()));
     }
 
-    @PutMapping()
+    @PatchMapping("/{id}")
     @ResponseStatus(OK)
-    UserDTO updateUser(@RequestBody @Valid final UpdateUserRequestDTO requestDTO) {
-        return userService.updateBy(requestDTO);
+    User updateUser(@PathVariable @Valid final String id, @RequestBody @Valid final UpdateUserRequestDTO requestDTO) {
+        return userService.updateById(id, requestDTO.transferToUpdateUser());
     }
 
     @DeleteMapping("/{id}")

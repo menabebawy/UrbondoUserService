@@ -1,8 +1,8 @@
 package com.urbondo.user.service;
 
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.UpdateUserRequestDTO;
-import com.urbondo.user.service.model.UserDTO;
+import com.urbondo.user.service.controller.AddUserRequestDTO;
+import com.urbondo.user.service.controller.UpdateUserRequestDTO;
+import com.urbondo.user.service.service.User;
 
 class MockData {
 
@@ -13,8 +13,8 @@ class MockData {
     final static String USER_ID = "1";
     final static String NOT_FOUND_USER_ID = "123";
 
-    static UserDTO userDTO() {
-        return new UserDTO(USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
+    static User userDTO() {
+        return new User(USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
     }
 
     static AddUserRequestDTO getAddUserRequestDTO() {

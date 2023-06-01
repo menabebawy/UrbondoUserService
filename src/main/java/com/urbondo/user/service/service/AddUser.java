@@ -1,7 +1,6 @@
-package com.urbondo.user.service.model;
+package com.urbondo.user.service.service;
 
-public record UserDTO(String id,
-                      String firstName,
+public record AddUser(String firstName,
                       String lastName,
                       String email,
                       String phone) {}

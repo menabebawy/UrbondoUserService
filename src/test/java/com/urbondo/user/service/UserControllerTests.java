@@ -1,12 +1,12 @@
 package com.urbondo.user.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.urbondo.user.service.controller.AddUserRequestDTO;
+import com.urbondo.user.service.controller.AddUserResponseDTO;
+import com.urbondo.user.service.controller.UpdateUserRequestDTO;
 import com.urbondo.user.service.controller.UserController;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import com.urbondo.user.service.model.AddUserRequestDTO;
-import com.urbondo.user.service.model.AddUserResponseDTO;
-import com.urbondo.user.service.model.UpdateUserRequestDTO;
-import com.urbondo.user.service.model.UserDTO;
+import com.urbondo.user.service.service.User;
 import com.urbondo.user.service.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -127,7 +127,11 @@ class UserControllerTests {
                                                                    MockData.VALID_EMAIL,
                                                                    MockData.VALID_PHONE);
 
-        UserDTO responseDTO = new UserDTO(MockData.USER_ID, "New_FName", MockData.VALID_LAST_NAME, MockData.VALID_EMAIL, MockData.VALID_PHONE);
+        User responseDTO = new User(MockData.USER_ID,
+                                    "New_FName",
+                                    MockData.VALID_LAST_NAME,
+                                    MockData.VALID_EMAIL,
+                                    MockData.VALID_PHONE);
 
         doReturn(responseDTO).when(userService).updateBy(any());
 

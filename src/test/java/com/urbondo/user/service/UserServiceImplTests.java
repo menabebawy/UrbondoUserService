@@ -1,8 +1,12 @@
 package com.urbondo.user.service;
 
+import com.urbondo.user.service.controller.AddUserRequestDTO;
+import com.urbondo.user.service.controller.AddUserResponseDTO;
+import com.urbondo.user.service.controller.UpdateUserRequestDTO;
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import com.urbondo.user.service.model.*;
+import com.urbondo.user.service.repository.UserDAO;
+import com.urbondo.user.service.service.User;
 import com.urbondo.user.service.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,14 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
-
 import static com.urbondo.user.service.MockData.*;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 
@@ -27,8 +28,8 @@ class UserServiceImplTests {
     private UserRepository userRepository;
     private UserService userService;
 
-    static UserEntity getUserEntity() {
-        return new UserEntity(USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
+    static UserDAO getUserEntity() {
+        return new UserDAO(USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE);
     }
 
     @BeforeEach
@@ -48,17 +49,17 @@ class UserServiceImplTests {
 
     @Test
     void whenGetUserById_givenExistUserId_thenGetUserData() {
-        UserEntity userEntity = getUserEntity();
+        UserDAO userDAO = getUserEntity();
 
-        doReturn(Optional.of(userEntity)).when(userRepository).findById(USER_ID);
+//        doReturn(Optional.of(userEntity)).when(userRepository).findById(USER_ID);
 
-        UserDTO userDTO = userService.findById(USER_ID);
+        User user = userService.findById(USER_ID);
 
-        assertEquals(USER_ID, userDTO.id());
-        assertEquals(VALID_FIRST_NAME, userDTO.firstName());
-        assertEquals(VALID_LAST_NAME, userDTO.lastName());
-        assertEquals(VALID_EMAIL, userDTO.email());
-        assertEquals(VALID_PHONE, userDTO.phone());
+        assertEquals(USER_ID, user.id());
+        assertEquals(VALID_FIRST_NAME, user.firstName());
+        assertEquals(VALID_LAST_NAME, user.lastName());
+        assertEquals(VALID_EMAIL, user.email());
+        assertEquals(VALID_PHONE, user.phone());
     }
 
     @Test

@@ -1,14 +1,15 @@
 package com.urbondo.user.service.controller;
 
-import com.urbondo.user.service.exception.InvalidEmailException;
-import com.urbondo.user.service.exception.InvalidPhoneException;
 import com.urbondo.user.service.exception.UserAlreadyFoundException;
 import com.urbondo.user.service.exception.UserNotFoundException;
-import org.springframework.validation.FieldError;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Arrays;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -16,30 +17,22 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestControllerAdvice
 class UserControllerAdvisor {
 
-    @ResponseStatus(NOT_FOUND)
+    @ResponseBody
+    @ExceptionHandler({MethodArgumentNotValidException.class, UserAlreadyFoundException.class})
+    ResponseEntity<ErrorResponse> handleControllerException(Throwable exception) {
+        return generateResponseEntity(BAD_REQUEST, exception);
+    }
+
+
+    @ResponseBody
     @ExceptionHandler(UserNotFoundException.class)
-    String handleUserNotFoundException(UserNotFoundException exception) {
-        return createResponseBody(exception.getMessage());
+    ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
+        return generateResponseEntity(NOT_FOUND, exception);
     }
 
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler({UserAlreadyFoundException.class, InvalidEmailException.class, InvalidPhoneException.class})
-    String handleBadRequestException(Exception exception) {
-        return createResponseBody(exception.getMessage());
-    }
-
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    String handleValidationErrors(MethodArgumentNotValidException exception) {
-        return createResponseBody(exception.getBindingResult()
-                                          .getFieldErrors()
-                                          .stream()
-                                          .map(FieldError::getDefaultMessage)
-                                          .findFirst()
-                                          .orElse(""));
-    }
-
-    private String createResponseBody(String value) {
-        return String.format("{ \"message\": \"%s\" }", value);
+    private ResponseEntity<ErrorResponse> generateResponseEntity(HttpStatus httpStatus, Throwable exception) {
+        return new ResponseEntity<>(new ErrorResponse(httpStatus,
+                                                      exception.getMessage(),
+                                                      Arrays.toString(exception.getStackTrace())), httpStatus);
     }
 }
