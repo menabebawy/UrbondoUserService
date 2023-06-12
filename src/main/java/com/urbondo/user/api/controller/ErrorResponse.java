@@ -1,4 +1,4 @@
-package com.urbondo.user.service.controller;
+package com.urbondo.user.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
@@ -13,14 +13,12 @@ class ErrorResponse {
     private final int code;
     private final String status;
     private final String message;
-    private final String stackTrace;
 
-    ErrorResponse(HttpStatus httpStatus, String message, String stackTrace) {
+    ErrorResponse(HttpStatus httpStatus, String message) {
         this.timestamp = new Date();
         this.code = httpStatus.value();
         this.status = httpStatus.name();
         this.message = message;
-        this.stackTrace = stackTrace;
     }
 
     public Date getTimestamp() {
@@ -37,9 +35,5 @@ class ErrorResponse {
 
     public String getMessage() {
         return message;
-    }
-
-    public String getStackTrace() {
-        return stackTrace;
     }
 }

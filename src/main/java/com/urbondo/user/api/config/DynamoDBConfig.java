@@ -1,4 +1,4 @@
-package com.urbondo.user.service.config;
+package com.urbondo.user.api.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -15,19 +15,21 @@ import static com.amazonaws.regions.Regions.US_EAST_1;
 public class DynamoDBConfig {
 
     @Bean
-    public DynamoDBMapper dynamoDBMapper() {
-        return new DynamoDBMapper(amazonDynamoDB());
+    public DynamoDBMapper dynamoDBMapper(AmazonDynamoDB amazonDynamoDB) {
+        return new DynamoDBMapper(amazonDynamoDB);
     }
 
 
-    private AmazonDynamoDB amazonDynamoDB() {
+    @Bean
+    public AmazonDynamoDB amazonDynamoDB(AWSCredentials awsCredentials) {
         return AmazonDynamoDBClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials()))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withRegion(US_EAST_1)
                 .build();
     }
 
-    private AWSCredentials awsCredentials() {
+    @Bean
+    public AWSCredentials awsCredentials() {
         return new DefaultAWSCredentialsProviderChain().getCredentials();
     }
 }

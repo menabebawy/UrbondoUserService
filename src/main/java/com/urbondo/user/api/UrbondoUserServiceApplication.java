@@ -1,4 +1,4 @@
-package com.urbondo.user.service;
+package com.urbondo.user.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
