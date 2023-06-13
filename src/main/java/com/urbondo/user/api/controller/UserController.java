@@ -21,7 +21,11 @@ public class UserController {
     @GetMapping("/{id}")
     @ResponseStatus(OK)
     public User fetchUserById(@PathVariable @Valid String id) {
-        return userService.findById(id);
+        User user = userService.findById(id);
+        if (user == null) {
+            throw new ResourceNotFoundException();
+        }
+        return user;
     }
 
     @PostMapping()
