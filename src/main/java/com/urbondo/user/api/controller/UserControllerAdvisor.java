@@ -28,5 +28,6 @@ public class UserControllerAdvisor {
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler({ResourceNotFoundException.class})
     public void handleResourceNotFoundException() {
+        // We will return an empty response with status code 404
     }
 }
