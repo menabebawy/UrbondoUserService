@@ -1,6 +1,6 @@
 package com.urbondo.user.api.controller;
 
-import com.urbondo.user.api.service.User;
+import com.urbondo.user.api.repository.UserDao;
 import com.urbondo.user.api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +20,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(OK)
-    public User fetchUserById(@PathVariable @Valid String id) {
-        User user = userService.findById(id);
-        if (user == null) {
-            throw new ResourceNotFoundException();
-        }
-        return user;
+    public UserDao fetchUserById(@PathVariable @Valid String id) {
+        return userService.findById(id);
     }
 
     @PostMapping()
     @ResponseStatus(CREATED)
-    public User addNewUser(@RequestBody @Valid AddUserRequestDTO requestDTO) {
+    public UserDao addNewUser(@RequestBody @Valid AddUserRequestDto requestDTO) {
         return userService.add(requestDTO);
     }
 
     @PatchMapping()
     @ResponseStatus(OK)
-    public User updateUser(@RequestBody @Valid UpdateUserRequestDTO requestDTO) {
+    public UserDao updateUser(@RequestBody @Valid UpdateUserRequestDto requestDTO) {
         return userService.updateById(requestDTO);
     }
 

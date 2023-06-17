@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "urbondo-user")
-public final class UserDAO {
+public final class UserDao {
     @DynamoDBHashKey
     private String id;
     @DynamoDBAttribute
@@ -19,10 +19,10 @@ public final class UserDAO {
     @DynamoDBAttribute
     private String phone;
 
-    public UserDAO() {
+    public UserDao() {
     }
 
-    public UserDAO(String id, String firstName, String lastName, String email, String phone) {
+    public UserDao(String id, String firstName, String lastName, String email, String phone) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

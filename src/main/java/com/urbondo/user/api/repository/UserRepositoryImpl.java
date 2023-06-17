@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 class UserRepositoryImpl implements UserRepository {
@@ -19,8 +20,12 @@ class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDAO findById(String id) {
-        return dynamoDBMapper.load(UserDAO.class, id);
+    public Optional<UserDao> findById(String id) {
+        UserDao userDAO = dynamoDBMapper.load(UserDao.class, id);
+        if (userDAO == null) {
+            return Optional.empty();
+        }
+        return Optional.of(userDAO);
     }
 
     @Override
@@ -31,22 +36,23 @@ class UserRepositoryImpl implements UserRepository {
         Map<String, String> attributesNames = new HashMap<>();
         attributesNames.put("#email", "email");
 
-        DynamoDBQueryExpression<UserDAO> queryExpression = new DynamoDBQueryExpression<UserDAO>().withIndexName("email")
+        DynamoDBQueryExpression<UserDao> queryExpression = new DynamoDBQueryExpression<UserDao>().withIndexName("email")
                 .withKeyConditionExpression("#email = :email")
                 .withExpressionAttributeNames(attributesNames)
                 .withExpressionAttributeValues(attributesValues)
                 .withConsistentRead(false);
 
-        return !dynamoDBMapper.query(UserDAO.class, queryExpression).isEmpty();
+        return !dynamoDBMapper.query(UserDao.class, queryExpression).isEmpty();
     }
 
     @Override
-    public void save(UserDAO userDAO) {
+    public UserDao save(UserDao userDAO) {
         dynamoDBMapper.save(userDAO);
+        return userDAO;
     }
 
     @Override
-    public void delete(UserDAO userDAO) {
+    public void delete(UserDao userDAO) {
         dynamoDBMapper.delete(userDAO);
     }
 }

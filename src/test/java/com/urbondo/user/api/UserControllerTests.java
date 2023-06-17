@@ -1,11 +1,12 @@
 package com.urbondo.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.urbondo.user.api.controller.AddUserRequestDTO;
-import com.urbondo.user.api.controller.UpdateUserRequestDTO;
+import com.urbondo.lib.ResourceNotFoundException;
+import com.urbondo.user.api.controller.AddUserRequestDto;
+import com.urbondo.user.api.controller.UpdateUserRequestDto;
 import com.urbondo.user.api.controller.UserController;
 import com.urbondo.user.api.controller.UserNotFoundException;
-import com.urbondo.user.api.service.User;
+import com.urbondo.user.api.repository.UserDao;
 import com.urbondo.user.api.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,17 +34,19 @@ class UserControllerTests {
     @MockBean
     UserService userService;
 
-    private static Stream<AddUserRequestDTO> provideAddUserRequestsForBadRequest() {
+    private static Stream<AddUserRequestDto> provideAddUserRequestsForBadRequest() {
         return Stream.of(
-                new AddUserRequestDTO("", "Json", "json@test.com", "123456789"),
-                new AddUserRequestDTO("Json", "", "json@test.com", "123456789"),
-                new AddUserRequestDTO("Json", "Tom", "json.test.com", "123456789"),
-                new AddUserRequestDTO("Tom", "Cat", "json@test.com", "")
+                new AddUserRequestDto("", "Json", "json@test.com", "123456789"),
+                new AddUserRequestDto("Json", "", "json@test.com", "123456789"),
+                new AddUserRequestDto("Json", "Tom", "json.test.com", "123456789"),
+                new AddUserRequestDto("Tom", "Cat", "json@test.com", "")
         );
     }
 
     @Test
     void whenGetUser_givenNotFoundUserId_thenReturnNotFoundCode() throws Exception {
+        when(userService.findById("2")).thenThrow(new ResourceNotFoundException());
+
         mockMvc.perform(get(URL + "/2").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -58,7 +61,7 @@ class UserControllerTests {
 
     @ParameterizedTest
     @MethodSource("provideAddUserRequestsForBadRequest")
-    void whenPostUser_givenInvalidRequest_thenBadRequest(AddUserRequestDTO requestDTO) throws Exception {
+    void whenPostUser_givenInvalidRequest_thenBadRequest(AddUserRequestDto requestDTO) throws Exception {
         mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());
@@ -66,7 +69,7 @@ class UserControllerTests {
 
     @Test
     void whenAddUser_givenValidRequest_thenCorrect() throws Exception {
-        AddUserRequestDTO requestDTO = new AddUserRequestDTO(getUser().firstName(), getUser().lastName(), getUser().email(), getUser().phone());
+        AddUserRequestDto requestDTO = new AddUserRequestDto(getUser().getFirstName(), getUser().getLastName(), getUser().getEmail(), getUser().getPhone());
 
         when(userService.add(requestDTO)).thenReturn(getUser());
 
@@ -77,8 +80,8 @@ class UserControllerTests {
 
     @Test
     void whenUpdateUser_givenValidRequest_thenCorrect() throws Exception {
-        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(getUser().id(), "Tim", getUser().lastName(), getUser().phone());
-        User updatedUser = new User(getUser().id(), "Tim", getUser().lastName(), getUser().email(), getUser().phone());
+        UpdateUserRequestDto requestDTO = new UpdateUserRequestDto(getUser().getId(), "Tim", getUser().getEmail(), getUser().getPhone());
+        UserDao updatedUser = new UserDao(getUser().getId(), "Tim", getUser().getLastName(), getUser().getEmail(), getUser().getPhone());
 
         when(userService.updateById(requestDTO)).thenReturn(updatedUser);
 
@@ -89,7 +92,7 @@ class UserControllerTests {
 
     @Test
     void whenDeleteUser_givenNotFoundUserId_thenBadRequest() throws Exception {
-        doThrow(new UserNotFoundException(getUser().id())).when(userService).deleteBy(getUser().id());
+        doThrow(new UserNotFoundException(USER_ID)).when(userService).deleteBy(getUser().getId());
 
         mockMvc.perform(delete(URL + "/" + USER_ID)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -97,8 +100,8 @@ class UserControllerTests {
 
     }
 
-    private User getUser() {
-        return new User(USER_ID, "Tom", "Cat", "tom.cat@text.com", "123456789");
+    private UserDao getUser() {
+        return new UserDao(USER_ID, "Tom", "Cat", "tom.cat@text.com", "123456789");
     }
 
 }

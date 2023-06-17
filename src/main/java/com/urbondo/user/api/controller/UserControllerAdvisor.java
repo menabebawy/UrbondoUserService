@@ -1,5 +1,8 @@
 package com.urbondo.user.api.controller;
 
+import com.urbondo.lib.ErrorResponse;
+import com.urbondo.lib.ResourceNotFoundException;
+import com.urbondo.lib.UrbondoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
