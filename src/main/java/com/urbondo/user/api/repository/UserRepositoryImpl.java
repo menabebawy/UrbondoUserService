@@ -36,7 +36,7 @@ class UserRepositoryImpl implements UserRepository {
         Map<String, String> attributesNames = new HashMap<>();
         attributesNames.put("#email", "email");
 
-        DynamoDBQueryExpression<UserDao> queryExpression = new DynamoDBQueryExpression<UserDao>().withIndexName("email")
+        DynamoDBQueryExpression<UserDao> queryExpression = new DynamoDBQueryExpression<UserDao>().withIndexName("email-index")
                 .withKeyConditionExpression("#email = :email")
                 .withExpressionAttributeNames(attributesNames)
                 .withExpressionAttributeValues(attributesValues)
